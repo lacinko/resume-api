@@ -9,6 +9,8 @@ import cookieParser from "cookie-parser";
 import AppError from "./utils/appError";
 import helmet from "helmet";
 import rateLimitMiddleware from "./middleware/rateLimiter";
+import workRouter from "./routes/work.route";
+import skillsRouter from "./routes/skill.route";
 
 validateEnv();
 
@@ -51,6 +53,10 @@ async function bootstrap() {
       message,
     });
   });
+
+  // ROUTES
+  app.use("/api/work", workRouter);
+  app.use("/api/skills", skillsRouter);
 
   // UNHANDLED ROUTES
   app.all("*", (req: Request, res: Response, next: NextFunction) => {

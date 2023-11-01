@@ -16,22 +16,24 @@ model Role {
 
   title     String
   startDate DateTime
-  endDate   DateTime
+  endDate   DateTime?
   location  String
   description String
-  isCurrent Boolean
+  isCurrent Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   company   Company @relation(fields: [companyId], references: [id])
   companyId String
+
+  skills    Skill[]
 }
 
 model Company {
   id        String   @id @default(uuid())
   
-  name     String
+  name     String @unique
   location String
   website  String
   logo     String
@@ -39,6 +41,18 @@ model Company {
   industry String
   address  String
   about    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roles Role[]
+}
+
+model Skill{
+  id       String   @id @default(uuid())
+
+  name     String @unique
+  icon     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
