@@ -11,6 +11,8 @@ import helmet from "helmet";
 import rateLimitMiddleware from "./middleware/rateLimiter";
 import workRouter from "./routes/work.route";
 import skillsRouter from "./routes/skill.route";
+import projectsRouter from "./routes/project.route";
+import educationsRouter from "./routes/education.route";
 
 validateEnv();
 
@@ -57,6 +59,8 @@ async function bootstrap() {
   // ROUTES
   app.use("/api/work", workRouter);
   app.use("/api/skills", skillsRouter);
+  app.use("/api/projects", projectsRouter);
+  app.use("/api/education", educationsRouter);
 
   // UNHANDLED ROUTES
   app.all("*", (req: Request, res: Response, next: NextFunction) => {

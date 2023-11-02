@@ -22,12 +22,16 @@ export const getSkill = async (
 export const getSkills = async (
   where?: Prisma.SkillWhereInput,
   select?: Prisma.SkillSelect,
-  include?: Prisma.SkillInclude
+  include?: Prisma.SkillInclude,
+  orderBy?: Prisma.SkillOrderByWithAggregationInput,
+  take?: number
 ) => {
   return (await prisma.skill.findMany({
     ...(where && { where }),
     ...(!select && include && { include }),
     ...(!include && select && { select }),
+    ...(orderBy && { orderBy }),
+    ...(take && { take }),
   })) as Skill[];
 };
 

@@ -1,11 +1,15 @@
-import { object, string, TypeOf } from "zod";
+import { object, string, TypeOf, z } from "zod";
 
 export const createSkillSchema = object({
   body: object({
-    icon: string().min(1, "Icon can' be empty").max(40, "Icon is too long"),
+    icon: string()
+      .min(1, "Icon can' be empty")
+      .max(40, "Icon is too long")
+      .optional(),
     name: string()
       .min(1, "Figcaption can't be empty")
       .max(40, "Figcaption is too long"),
+    type: z.enum(["HARD_SKILL", "SOFT_SKILL"]),
   }),
 });
 

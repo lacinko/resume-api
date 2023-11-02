@@ -29,9 +29,7 @@ export const createSkillHandler = async (
 
     res.status(201).json({
       status: "success",
-      data: {
-        skill,
-      },
+      skill,
     });
   } catch (error: any) {
     if (error.code === "P2002") {
@@ -66,9 +64,7 @@ export const getSkillHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        skill,
-      },
+      skill,
     });
   } catch (error: any) {
     next(error);
@@ -81,14 +77,15 @@ export const getSkillsHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { select, include } = createObjectFromURLParamsAttributes(
-      req.query as GenericObject
-    );
+    const { where, select, include, orderBy, take } =
+      createObjectFromURLParamsAttributes(req.query as GenericObject);
 
     const skills = await getSkills(
-      { id: req.params.skillId },
+      where as Prisma.SkillWhereInput,
       select as Prisma.SkillSelect,
-      include as Prisma.SkillInclude
+      include as Prisma.SkillInclude,
+      orderBy as Prisma.SkillOrderByWithAggregationInput,
+      take as number
     );
 
     if (!skills) {
@@ -97,9 +94,7 @@ export const getSkillsHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        skills,
-      },
+      skills,
     });
   } catch (error: any) {
     next(error);
@@ -125,9 +120,7 @@ export const updateSkillHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        updatedSkill,
-      },
+      updatedSkill,
     });
   } catch (err: any) {
     next(err);

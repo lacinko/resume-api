@@ -38,9 +38,7 @@ export const createCompanyHandler = async (
 
     res.status(201).json({
       status: "success",
-      data: {
-        company,
-      },
+      company,
     });
   } catch (error: any) {
     if (error.code === "P2002") {
@@ -49,6 +47,7 @@ export const createCompanyHandler = async (
         message: "Company with that name already exist",
       });
     }
+
     next(error);
   }
 };
@@ -75,9 +74,7 @@ export const getCompanyHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        company,
-      },
+      company,
     });
   } catch (error: any) {
     next(error);
@@ -90,14 +87,15 @@ export const getCompaniesHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { select, include } = createObjectFromURLParamsAttributes(
-      req.query as GenericObject
-    );
+    const { where, select, include, orderBy, take } =
+      createObjectFromURLParamsAttributes(req.query as GenericObject);
 
     const companies = await getCompanies(
-      { id: req.params.companyId },
+      where as Prisma.CompanyWhereInput,
       select as Prisma.CompanySelect,
-      include as Prisma.CompanyInclude
+      include as Prisma.CompanyInclude,
+      orderBy as Prisma.CompanyOrderByWithAggregationInput,
+      take as number
     );
 
     if (!companies) {
@@ -106,9 +104,7 @@ export const getCompaniesHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        companies,
-      },
+      companies,
     });
   } catch (error: any) {
     next(error);
@@ -134,9 +130,7 @@ export const updateCompanyHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        updatedCompany,
-      },
+      updatedCompany,
     });
   } catch (err: any) {
     next(err);
@@ -180,9 +174,7 @@ export const createRoleHandler = async (
 
     res.status(201).json({
       status: "success",
-      data: {
-        role,
-      },
+      role,
     });
   } catch (error: any) {
     next(error);
@@ -211,9 +203,7 @@ export const getRoleHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        role,
-      },
+      role,
     });
   } catch (error: any) {
     next(error);
@@ -226,11 +216,11 @@ export const getRolesHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { select, include, orderBy, take } =
+    const { where, select, include, orderBy, take } =
       createObjectFromURLParamsAttributes(req.query as GenericObject);
 
     const roles = await getRoles(
-      { id: req.params.roleId },
+      where as Prisma.RoleWhereInput,
       select as Prisma.RoleSelect,
       include as Prisma.RoleInclude,
       orderBy as Prisma.RoleOrderByWithAggregationInput,
@@ -266,9 +256,7 @@ export const updateRoleHandler = async (
 
     res.status(200).json({
       status: "success",
-      data: {
-        updatedRole,
-      },
+      updatedRole,
     });
   } catch (err: any) {
     next(err);

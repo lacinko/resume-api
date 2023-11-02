@@ -22,12 +22,16 @@ export const getCompany = async (
 export const getCompanies = async (
   where?: Prisma.CompanyWhereInput,
   select?: Prisma.CompanySelect,
-  include?: Prisma.CompanyInclude
+  include?: Prisma.CompanyInclude,
+  orderBy?: Prisma.CompanyOrderByWithAggregationInput,
+  take?: number
 ) => {
   return (await prisma.company.findMany({
     ...(where && { where }),
     ...(!select && include && { include }),
     ...(!include && select && { select }),
+    ...(orderBy && { orderBy }),
+    ...(take && { take }),
   })) as Company[];
 };
 
