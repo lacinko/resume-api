@@ -102,3 +102,5 @@ bootstrap()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+export default app;
