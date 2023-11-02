@@ -8,7 +8,9 @@
     "start": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
     "migrate": "npx prisma migrate dev && npx prisma generate",
     "push": "npx prisma db push",
-    "build": "tsc -p ./tsconfig.json"
+    "build": "npx tsc",
+    "vercel:start": "vercel dev",
+    "vercel:deploy": "vercel deploy --prod"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,7 @@
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "ts-node-dev": "^2.0.0",
+    "vercel": "^32.5.0",
     "zod": "^3.22.4"
   }
 }
