@@ -57,17 +57,6 @@ async function bootstrap() {
   });
 
   // ROUTES
-  app.use("/", async (_, res: Response) => {
-    const message = {
-      message: "Hello and welcome to my REST resume API",
-      documentation: "Go to /api/docs for documentation",
-    };
-
-    res.status(200).json({
-      message,
-    });
-  });
-
   app.use("/api/work", workRouter);
   app.use("/api/skills", skillsRouter);
   app.use("/api/projects", projectsRouter);
