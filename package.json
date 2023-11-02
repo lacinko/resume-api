@@ -8,10 +8,15 @@
     "start": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
     "migrate": "npx prisma migrate dev && npx prisma generate",
     "push": "npx prisma db push",
-    "build": "npx tsc",
-    "vercel:start": "vercel dev",
-    "vercel:deploy": "vercel deploy --prod"
+    "ts.check": "tsc --project tsconfig.json",
+    "build": "rimraf build && tsc",
+    "add-build": "git add build"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,7 +28,9 @@
     "@types/lodash": "^4.14.200",
     "@types/morgan": "^1.9.7",
     "@types/node": "^20.8.9",
+    "pre-commit": "^1.2.2",
     "prisma": "^5.5.2",
+    "rimraf": "^5.0.5",
     "typescript": "^5.2.2"
   },
   "dependencies": {
