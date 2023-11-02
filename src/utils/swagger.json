@@ -1,0 +1,2882 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Resume - Topolsky Ladislav",
+    "description": "This is a documentation for the Resume REST API based on the OpenAPI 3.1 specification. The purpose of this documentation is to provide user with callable API Endpoints with description of the request and response payload. As well short descrption of the routes and their purpose. You can find out more information about me at [topolsky.eu](https://topolsky.eu).\n\nAll of the parameters in GET requests contains URL encoded objects.\n\n Example: ?include=%7B%22skills%22%3Atrue%7D = (?include={\"skills\":true})\n\nLink to the resume api repository:\n- [Resume API Repo](https://github.com/lacinko/resume-api)\n\nAPI endpoints that modify the data are allowed only with API Key. Provided operations are only to document other types of requests and are not accessible to public.",
+    "contact": {
+      "email": "ladislav.topolsky@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "v1 server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "work",
+      "description": "All about my work experience"
+    },
+    {
+      "name": "skills",
+      "description": "Discover my skills"
+    },
+    {
+      "name": "projects",
+      "description": "Explore my projects that I have built"
+    },
+    {
+      "name": "education",
+      "description": "Learn more about my education"
+    }
+  ],
+  "paths": {
+    "/work/companies": {
+      "get": {
+        "tags": ["work"],
+        "summary": "List of all the companies that I have worked for",
+        "description": "Get the list of all the companies that I have worked for.",
+        "operationId": "getCompanies",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter companies based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"location\":{\"contains\": \"New York\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from company object. \n\n(Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. \n\n(Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"roles\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Companies not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["work"],
+        "summary": "Create an new company",
+        "description": "Create an new company",
+        "operationId": "postCompany",
+        "requestBody": {
+          "description": "Create a new company in the DB (The name property has to be unique)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Company with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/work/companies/{companyId}": {
+      "get": {
+        "tags": ["work"],
+        "summary": "Get specific company by ID",
+        "description": "Get specific company by ID",
+        "operationId": "getCompanyByID",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "ID of company to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "7fe4d291-321e-4e25-97a0-2011fbe92748"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from company object. \n\n(Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. \n\n(Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"roles\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Company not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["work"],
+        "summary": "Create an new company",
+        "description": "Create an new company",
+        "operationId": "updateCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "ID of company to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "7fe4d291-321e-4e25-97a0-2011fbe92748"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Create a new company in the DB (The name property has to be unique)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Company"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Companies"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Company with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["work"],
+        "summary": "Delete existing company",
+        "description": "Delete existing company",
+        "operationId": "deleteCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "ID of company to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "7fe4d291-321e-4e25-97a0-2011fbe92748"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Company with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/work/roles": {
+      "get": {
+        "tags": ["work"],
+        "summary": "List of all roles",
+        "description": "Get the list of all roles.",
+        "operationId": "getRoles",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter roles based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\":{\"contains\": \"example\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from role object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Roles"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Roles"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Roles not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["work"],
+        "summary": "Create a new role",
+        "description": "Create a new role",
+        "operationId": "postRole",
+        "requestBody": {
+          "description": "Create a new role in the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Role with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/work/roles/{roleId}": {
+      "get": {
+        "tags": ["work"],
+        "summary": "Get specific role by ID",
+        "description": "Get specific role by ID",
+        "operationId": "getRoleByID",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "ID of role to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "27cca051-acfc-400f-9abe-ae5afef9aeb1"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from role object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Roles"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Roles"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["work"],
+        "summary": "Update a role by ID",
+        "description": "Update an existing role by ID",
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "ID of the role to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "27cca051-acfc-400f-9abe-ae5afef9aeb1"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update role details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["work"],
+        "summary": "Delete a role by ID",
+        "description": "Delete an existing role by ID",
+        "operationId": "deleteRole",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "ID of the role to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "27cca051-acfc-400f-9abe-ae5afef9aeb1"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Role deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/skills": {
+      "get": {
+        "tags": ["skills"],
+        "summary": "List of all roles",
+        "description": "Get the list of all skills.",
+        "operationId": "getSkills",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter roles based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\":{\"contains\": \"example\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from role object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skills"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skills"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skills not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["skills"],
+        "summary": "Create a new skill",
+        "description": "Create a new skill",
+        "operationId": "postSkill",
+        "requestBody": {
+          "description": "Create a new skill in the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Skill with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/skills/{roleId}": {
+      "get": {
+        "tags": ["skills"],
+        "summary": "Get specific skill by ID",
+        "description": "Get specific skill by ID",
+        "operationId": "getSkillByID",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "path",
+            "description": "ID of skill to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "85541d7a-d245-44a4-ac68-3c575b48e282"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from role object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skills"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skills"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["skills"],
+        "summary": "Update a skill by ID",
+        "description": "Update an existing skill by ID",
+        "operationId": "updateSkill",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "ID of the skill to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "85541d7a-d245-44a4-ac68-3c575b48e282"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update skill details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Skill updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["skills"],
+        "summary": "Delete a skill by ID",
+        "description": "Delete an existing skill by ID",
+        "operationId": "deleteSkill",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "path",
+            "description": "ID of the skill to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "85541d7a-d245-44a4-ac68-3c575b48e282"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Skill deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": ["projects"],
+        "summary": "List of all projects",
+        "description": "Get the list of all projects.",
+        "operationId": "getProjects",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter projects based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\":{\"contains\": \"example\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from project object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Projects"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Projects"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Projects not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["projects"],
+        "summary": "Create a new project",
+        "description": "Create a new project",
+        "operationId": "postProject",
+        "requestBody": {
+          "description": "Create a new project in the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Project with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/projects/{roleId}": {
+      "get": {
+        "tags": ["projects"],
+        "summary": "Get specific project by ID",
+        "description": "Get specific project by ID",
+        "operationId": "getProjectByID",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "d53d4866-7cc8-4910-89bd-0fffa0a984c9"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from project object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Projects"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Projects"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["projects"],
+        "summary": "Update a project by ID",
+        "description": "Update an existing project by ID",
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of the project to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "d53d4866-7cc8-4910-89bd-0fffa0a984c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update project details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["projects"],
+        "summary": "Delete a project by ID",
+        "description": "Delete an existing project by ID",
+        "operationId": "deleteProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of the project to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "d53d4866-7cc8-4910-89bd-0fffa0a984c9"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Project deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/projects/tags": {
+      "get": {
+        "tags": ["projects"],
+        "summary": "List of all tags",
+        "description": "Get the list of all tags.",
+        "operationId": "getTags",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter tags based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\":{\"contains\": \"example\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from tag object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tags"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tags"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tags not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["projects"],
+        "summary": "Create a new tag",
+        "description": "Create a new tag",
+        "operationId": "postTag",
+        "requestBody": {
+          "description": "Create a new tag in the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Tag with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/projects/tags/{tagId}": {
+      "get": {
+        "tags": ["projects"],
+        "summary": "Get specific tag by ID",
+        "description": "Get specific tag by ID",
+        "operationId": "getTagByID",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "ID of tag to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "ca72e1ee-1dd4-4828-ac1e-d17678341f32"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from tag object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tags"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tags"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["projects"],
+        "summary": "Update a tag by ID",
+        "description": "Update an existing tag by ID",
+        "operationId": "updateTag",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "ID of the tag to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "ca72e1ee-1dd4-4828-ac1e-d17678341f32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update tag details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Tag updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["projects"],
+        "summary": "Delete a tag by ID",
+        "description": "Delete an existing tag by ID",
+        "operationId": "deleteTag",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "ID of the tag to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "ca72e1ee-1dd4-4828-ac1e-d17678341f32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tag deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/education": {
+      "get": {
+        "tags": ["education"],
+        "summary": "List of all educations",
+        "description": "Get the list of all educations.",
+        "operationId": "getEducations",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter educations based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\":{\"contains\": \"example\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from education object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from skills object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Educations"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Educations"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Educations not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["education"],
+        "summary": "Create a new education",
+        "description": "Create a new education",
+        "operationId": "postEducation",
+        "requestBody": {
+          "description": "Create a new education in the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Education"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Education"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Education"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Education"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Education"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Education with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/education/{educationId}": {
+      "get": {
+        "tags": ["education"],
+        "summary": "Get specific education by ID",
+        "description": "Get specific education by ID",
+        "operationId": "getEducationByID",
+        "parameters": [
+          {
+            "name": "educationId",
+            "in": "path",
+            "description": "ID of education to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "31b369cb-f444-47bf-9ae5-946332387cce"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from education object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from education object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Educations"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Educations"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Education not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["education"],
+        "summary": "Update a education by ID",
+        "description": "Update an existing education by ID",
+        "operationId": "updateEducation",
+        "parameters": [
+          {
+            "name": "educationId",
+            "in": "path",
+            "description": "ID of the education to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "31b369cb-f444-47bf-9ae5-946332387cce"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update education details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Education"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Education"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Education updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Education"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Education"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Education not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["education"],
+        "summary": "Delete a education by ID",
+        "description": "Delete an existing education by ID",
+        "operationId": "deleteEducation",
+        "parameters": [
+          {
+            "name": "educationId",
+            "in": "path",
+            "description": "ID of the education to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "31b369cb-f444-47bf-9ae5-946332387cce"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Education deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Education not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/education/establishments": {
+      "get": {
+        "tags": ["education"],
+        "summary": "List of all establishments",
+        "description": "Get the list of all establishments.",
+        "operationId": "getEstablishments",
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Filter establishments based on condition.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\":{\"contains\": \"example\"}}"]
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from establishment object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from establishment object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Order the list based on value.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"name\": \"asc\"}"]
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Select an amount of records to display.",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": ["2"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishments"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishments"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Establishments not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["education"],
+        "summary": "Create a new establishment",
+        "description": "Create a new establishment",
+        "operationId": "postEstablishment",
+        "requestBody": {
+          "description": "Create a new establishment in the DB",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Establishment"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Establishment"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Establishment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishment"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishment"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Establishment with that name exists."
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    },
+    "/education/establishments/{establishmentId}": {
+      "get": {
+        "tags": ["education"],
+        "summary": "Get specific establishment by ID",
+        "description": "Get specific establishment by ID",
+        "operationId": "getEstablishmentByID",
+        "parameters": [
+          {
+            "name": "establishmentId",
+            "in": "path",
+            "description": "ID of establishment to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "ea4a9506-1765-43c1-8878-9331c377ee38"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields from establishment object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"id\": true}"]
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Include fields from establishment object. (Include and select parameters can't be called together.)",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["{\"company\": true}"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishments"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishments"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Establishment not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["education"],
+        "summary": "Update a establishment by ID",
+        "description": "Update an existing establishment by ID",
+        "operationId": "updateEstablishment",
+        "parameters": [
+          {
+            "name": "establishmentId",
+            "in": "path",
+            "description": "ID of the establishment to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "ea4a9506-1765-43c1-8878-9331c377ee38"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update establishment details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Establishment"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Establishment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Establishment updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishment"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Establishment"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Establishment not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["education"],
+        "summary": "Delete a establishment by ID",
+        "description": "Delete an existing establishment by ID",
+        "operationId": "deleteEstablishment",
+        "parameters": [
+          {
+            "name": "establishmentId",
+            "in": "path",
+            "description": "ID of the establishment to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "ea4a9506-1765-43c1-8878-9331c377ee38"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Establishment deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Establishment not found"
+          }
+        },
+        "security": [
+          {
+            "x_api_key": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Companies": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the response",
+            "examples": ["success"]
+          },
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["9da66a07-97ea-4302-a150-8c626f37918d"]
+                },
+                "name": {
+                  "type": "string",
+                  "examples": ["The Adecco Group"]
+                },
+                "location": {
+                  "type": "string",
+                  "examples": ["Prague, Czechia · On-site"]
+                },
+                "website": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": ["https://www.adeccogroup.com/"]
+                },
+                "logo": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": [
+                    "https://www-prd-amz930-com.azureedge.net/-/media/project/adeccogroup/horizontal-the-adecco-group-brand-mark-land-rgb.png?h=475&w=1385&modified=20230522091330&hash=A1FF78C86A67D74FA5CE1C88B0DCE303"
+                  ]
+                },
+                "size": {
+                  "type": "string",
+                  "examples": ["10001+"]
+                },
+                "industry": {
+                  "type": "string",
+                  "examples": ["Human resource management services"]
+                },
+                "address": {
+                  "type": "string",
+                  "examples": ["Pikrtova 1737/1a, Nusle, 140 00 Prague"]
+                },
+                "about": {
+                  "type": "string",
+                  "examples": [
+                    "The Adecco Group Czech Republic works to get people into work..."
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T14:31:45.764Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T14:42:03.729Z"]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "location",
+                "website",
+                "logo",
+                "size",
+                "industry",
+                "address",
+                "about",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          }
+        },
+        "required": ["status", "companies"]
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": ["The Adecco Group"]
+          },
+          "location": {
+            "type": "string",
+            "examples": ["Prague, Czechia · On-site"]
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "examples": ["https://www.adeccogroup.com/"]
+          },
+          "logo": {
+            "type": "string",
+            "format": "uri",
+            "examples": [
+              "https://www-prd-amz930-com.azureedge.net/-/media/project/adeccogroup/horizontal-the-adecco-group-brand-mark-land-rgb.png?h=475&w=1385&modified=20230522091330&hash=A1FF78C86A67D74FA5CE1C88B0DCE303"
+            ]
+          },
+          "size": {
+            "type": "string",
+            "examples": ["10001+"]
+          },
+          "industry": {
+            "type": "string",
+            "examples": ["Human resource management services"]
+          },
+          "address": {
+            "type": "string",
+            "examples": ["Pikrtova 1737/1a, Nusle, 140 00 Prague"]
+          },
+          "about": {
+            "type": "string",
+            "examples": [
+              "The Adecco Group Czech Republic works to get people into work..."
+            ]
+          }
+        }
+      },
+      "Roles": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the response",
+            "examples": ["success"]
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["27cca051-acfc-400f-9abe-ae5afef9aeb1"]
+                },
+                "name": {
+                  "type": "string",
+                  "examples": ["HTML / CSS Developer"]
+                },
+                "location": {
+                  "type": "string",
+                  "examples": ["Prague, Czechia · On-site"]
+                },
+                "website": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": ["https://www.example.com"]
+                },
+                "logo": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": ["https://www.example.com/logo.png"]
+                },
+                "size": {
+                  "type": "string",
+                  "examples": ["10001+"]
+                },
+                "industry": {
+                  "type": "string",
+                  "examples": ["Web Development"]
+                },
+                "address": {
+                  "type": "string",
+                  "examples": ["123 Main St, Prague, Czechia"]
+                },
+                "about": {
+                  "type": "string",
+                  "examples": ["A description of the HTML/CSS Developer role."]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T15:02:52.980Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T15:02:52.980Z"]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "location",
+                "website",
+                "logo",
+                "size",
+                "industry",
+                "address",
+                "about",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          }
+        },
+        "required": ["status", "roles"]
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "examples": ["HTML / CSS Developer"]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "examples": ["2021-01-01T00:00:00.000Z"]
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "examples": ["2021-06-01T00:00:00.000Z"]
+          },
+          "location": {
+            "type": "string",
+            "examples": ["Prague, Czechia · On-site"]
+          },
+          "description": {
+            "type": "string",
+            "examples": [
+              "As an HTML/CSS Developer I collaborated with designers to implement web designs using the Foundation CSS framework. My role involved ensuring proper HTML semantics, adhering to web design best practices, and integrating new design elements. I contributed to projects on GitLab daily, ensuring version control and seamless teamwork."
+            ]
+          },
+          "isCurrent": {
+            "type": "boolean",
+            "examples": [false]
+          }
+        },
+        "required": [
+          "title",
+          "startDate",
+          "endDate",
+          "location",
+          "description",
+          "isCurrent"
+        ]
+      },
+      "Establishments": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the response",
+            "examples": ["success"]
+          },
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["9da66a07-97ea-4302-a150-8c626f37918d"]
+                },
+                "name": {
+                  "type": "string",
+                  "examples": ["The Adecco Group"]
+                },
+                "location": {
+                  "type": "string",
+                  "examples": ["Prague, Czechia · On-site"]
+                },
+                "website": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": ["https://www.adeccogroup.com/"]
+                },
+                "logo": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": [
+                    "https://www-prd-amz930-com.azureedge.net/-/media/project/adeccogroup/horizontal-the-adecco-group-brand-mark-land-rgb.png?h=475&w=1385&modified=20230522091330&hash=A1FF78C86A67D74FA5CE1C88B0DCE303"
+                  ]
+                },
+                "size": {
+                  "type": "string",
+                  "examples": ["10001+"]
+                },
+                "industry": {
+                  "type": "string",
+                  "examples": ["Human resource management services"]
+                },
+                "address": {
+                  "type": "string",
+                  "examples": ["Pikrtova 1737/1a, Nusle, 140 00 Prague"]
+                },
+                "about": {
+                  "type": "string",
+                  "examples": [
+                    "The Adecco Group Czech Republic works to get people into work..."
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T14:31:45.764Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T14:42:03.729Z"]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "location",
+                "website",
+                "logo",
+                "size",
+                "industry",
+                "address",
+                "about",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          }
+        },
+        "required": ["status", "companies"]
+      },
+      "Establishment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": ["ea4a9506-1765-43c1-8878-9331c377ee38"]
+          },
+          "name": {
+            "type": "string",
+            "examples": ["Czech University of Life Sciences Prague"]
+          },
+          "location": {
+            "type": "string",
+            "examples": ["Kamýcká 129, 165 00 Praha-Suchdol"]
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "examples": ["https://www.czu.cz/en"]
+          }
+        },
+        "required": ["id", "name", "location", "website"]
+      },
+      "Educations": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examples": ["success"]
+          },
+          "educations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["31b369cb-f444-47bf-9ae5-946332387cce"]
+                },
+                "title": {
+                  "type": "string",
+                  "examples": ["Bachelor's degree, Informatics"]
+                },
+                "type": {
+                  "type": "string",
+                  "examples": ["SCHOOL"]
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2019-09-01T00:00:00.000Z"]
+                },
+                "endDate": {
+                  "type": ["string", "null"],
+                  "format": "date-time",
+                  "examples": ["2022-06-01T00:00:00.000Z", null]
+                },
+                "certificate": {
+                  "type": ["string", "null"],
+                  "format": "uri",
+                  "examples": [null]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-11-01T15:28:35.701Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-11-01T15:28:35.701Z"]
+                },
+                "establishmentId": {
+                  "type": "string",
+                  "examples": ["ea4a9506-1765-43c1-8878-9331c377ee38"]
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "type",
+                "startDate",
+                "createdAt",
+                "updatedAt",
+                "establishmentId"
+              ]
+            }
+          }
+        },
+        "required": ["status", "educations"]
+      },
+      "Education": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "examples": ["Responsive Web Design"]
+          },
+          "type": {
+            "type": "string",
+            "examples": ["COURSE"]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "examples": ["2020-03-28T00:00:00.000Z"]
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "examples": ["2020-06-28T00:00:00.000Z"]
+          },
+          "certificate": {
+            "type": "string",
+            "format": "uri",
+            "examples": [
+              "https://www.freecodecamp.org/certification/lacinko/responsive-web-design"
+            ]
+          }
+        },
+        "required": ["title", "type", "startDate", "endDate", "certificate"]
+      },
+      "Tags": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examples": ["success"]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["ca72e1ee-1dd4-4828-ac1e-d17678341f32"]
+                },
+                "name": {
+                  "type": "string",
+                  "examples": ["old"]
+                },
+                "color": {
+                  "type": "string",
+                  "examples": ["bg-slate-400"]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-11-01T11:22:27.508Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-11-01T11:23:23.521Z"]
+                }
+              },
+              "required": ["id", "name", "color", "createdAt", "updatedAt"]
+            }
+          }
+        },
+        "required": ["status", "tags"]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": ["old"]
+          },
+          "color": {
+            "type": "string",
+            "examples": ["bg-slate-400"]
+          }
+        },
+        "required": ["name", "color"]
+      },
+      "Projects": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examples": ["success"]
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["c7d9da6c-3e3d-4d47-908f-d6f9c913260f"]
+                },
+                "name": {
+                  "type": "string",
+                  "examples": ["Weather App"]
+                },
+                "description": {
+                  "type": "string",
+                  "examples": [
+                    "Small weather app built with vanila JavaScript, HTML and CSS"
+                  ]
+                },
+                "githubUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": ["https://github.com/lacinko/weather-app"]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "examples": ["https://lacinko.github.io/weather-app"]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-11-01T11:48:37.467Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-11-01T11:48:37.467Z"]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "description",
+                "githubUrl",
+                "url",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          }
+        },
+        "required": ["status", "projects"]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": ["Weather App"]
+          },
+          "description": {
+            "type": "string",
+            "examples": [
+              "Small weather app built with vanilla JavaScript, HTML and CSS"
+            ]
+          },
+          "githubUrl": {
+            "type": "string",
+            "format": "uri",
+            "examples": ["https://github.com/lacinko/weather-app"]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "examples": ["https://lacinko.github.io/weather-app"]
+          }
+        },
+        "required": ["name", "description", "githubUrl", "url"]
+      },
+      "Skills": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examples": ["success"]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": ["859a0665-c0e7-4080-9136-6932b8605c8c"]
+                },
+                "name": {
+                  "type": "string",
+                  "examples": ["HTML5"]
+                },
+                "icon": {
+                  "type": "string",
+                  "examples": ["HTML5"]
+                },
+                "type": {
+                  "type": "string",
+                  "examples": ["HARD_SKILL"]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T15:33:39.123Z"]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "examples": ["2023-10-31T15:33:39.123Z"]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "icon",
+                "type",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          }
+        },
+        "required": ["status", "skills"]
+      },
+      "Skill": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": ["HTML5"]
+          },
+          "icon": {
+            "type": "string",
+            "examples": ["HTML5"]
+          },
+          "type": {
+            "type": "string",
+            "enum": ["HARD_SKILL", "SOFT_SKILL"],
+            "examples": ["HARD_SKILL"]
+          }
+        },
+        "required": ["name", "icon", "type"]
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "examples": ["success"] },
+          "data": { "type": "null" }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "##default"
+        }
+      }
+    },
+    "requestBodies": {
+      "Company": {
+        "description": "Company that needs to be added to the list",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Company"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/Company"
+            }
+          }
+        }
+      },
+      "UserArray": {
+        "description": "List of user object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "x_api_key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header"
+      }
+    }
+  }
+}

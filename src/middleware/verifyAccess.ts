@@ -10,13 +10,10 @@ export const verifyAccess = async (
   try {
     let access_token;
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      access_token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies.access_token) {
-      access_token = req.cookies.access_token;
+    if (req.headers["x-api-key"]) {
+      access_token = req.headers["x-api-key"];
+    } else if (req.cookies["x-api-key"]) {
+      access_token = req.cookies["x-api-key"];
     }
 
     if (!access_token) {

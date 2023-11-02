@@ -8,11 +8,13 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import AppError from "./utils/appError";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
 import rateLimitMiddleware from "./middleware/rateLimiter";
 import workRouter from "./routes/work.route";
 import skillsRouter from "./routes/skill.route";
 import projectsRouter from "./routes/project.route";
 import educationsRouter from "./routes/education.route";
+import specs from "./utils/swagger.json";
 
 validateEnv();
 
@@ -55,6 +57,9 @@ async function bootstrap() {
       message,
     });
   });
+
+  //DOCS
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
   // ROUTES
   app.use("/api/work", workRouter);
