@@ -18,90 +18,89 @@ validateEnv();
 
 const app = express();
 
-//async function bootstrap() {
-// MIDDLEWARE
-// 1.Body Parser
-app.use(express.json({ limit: "10kb" }));
+async function bootstrap() {
+  // MIDDLEWARE
+  // 1.Body Parser
+  app.use(express.json({ limit: "10kb" }));
 
-// 2. Cookie Parser
-app.use(cookieParser());
+  // 2. Cookie Parser
+  app.use(cookieParser());
 
-// 2. Cors
-app.use(
-  cors({
-    origin: [config.get<string>("origin")],
-    credentials: true,
-  })
-);
+  // 2. Cors
+  app.use(
+    cors({
+      origin: [config.get<string>("origin")],
+      credentials: true,
+    })
+  );
 
-// 3. Logger
-if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+  // 3. Logger
+  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
-// 4. Default Headers
-app.use(helmet());
+  // 4. Default Headers
+  app.use(helmet());
 
-//5. Rate Limiter
-app.use(rateLimitMiddleware);
+  //5. Rate Limiter
+  app.use(rateLimitMiddleware);
 
-// Testing
-app.get("/api/healthchecker", async (_, res: Response) => {
-  const message = {
-    message: "Server is running",
-    database: "Connected",
-  };
+  // Testing
+  app.get("/api/healthchecker", async (_, res: Response) => {
+    const message = {
+      message: "Server is running",
+      database: "Connected",
+    };
 
-  res.status(200).json({
-    status: "success",
-    message,
+    res.status(200).json({
+      status: "success",
+      message,
+    });
   });
-});
 
-// ROUTES
-app.use("/", async (_, res: Response) => {
-  const message = {
-    message: "Hello and welcome to my REST resume API",
-    documentation: "Go to /api/docs for documentation",
-  };
+  // ROUTES
+  app.use("/", async (_, res: Response) => {
+    const message = {
+      message: "Hello and welcome to my REST resume API",
+      documentation: "Go to /api/docs for documentation",
+    };
 
-  res.status(200).json({
-    message,
+    res.status(200).json({
+      message,
+    });
   });
-});
 
-app.use("/api/work", workRouter);
-app.use("/api/skills", skillsRouter);
-app.use("/api/projects", projectsRouter);
-app.use("/api/education", educationsRouter);
+  app.use("/api/work", workRouter);
+  app.use("/api/skills", skillsRouter);
+  app.use("/api/projects", projectsRouter);
+  app.use("/api/education", educationsRouter);
 
-// UNHANDLED ROUTES
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  next(new AppError(404, `Route ${req.originalUrl} not found`));
-});
-
-// GLOBAL ERROR HANDLER
-app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
-  err.status = err.status || "error";
-  err.statusCode = err.statusCode || 500;
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
+  // UNHANDLED ROUTES
+  app.all("*", (req: Request, res: Response, next: NextFunction) => {
+    next(new AppError(404, `Route ${req.originalUrl} not found`));
   });
-});
 
-const port = config.get<number>("port");
-app.listen(port, () => {
-  console.log(`Server on port: ${port}`);
-});
-//}
+  // GLOBAL ERROR HANDLER
+  app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
+    err.status = err.status || "error";
+    err.statusCode = err.statusCode || 500;
 
-/*bootstrap()
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+  });
+
+  const port = config.get<number>("port");
+  app.listen(port, () => {
+    console.log(`Server on port: ${port}`);
+  });
+}
+
+bootstrap()
   .catch((err) => {
     throw err;
   })
   .finally(async () => {
     await prisma.$disconnect();
   });
-*/
 
 export default app;
